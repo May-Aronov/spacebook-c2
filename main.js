@@ -27,6 +27,7 @@ var SpacebookApp = function () {
     // the current id to assign to a post
     currentId: 4,
     $posts: $('.posts'),
+    Idcomment:0,
 
     _findPostById: function (id) {
       for (var i = 0; i < this.posts.length; i += 1) {
@@ -39,7 +40,8 @@ var SpacebookApp = function () {
     createPost: function (text) {
       var post = {
         text: text,
-        id: this.currentId
+        id: this.currentId,
+        comments:[]
       }
 
       this.currentId += 1;
@@ -76,14 +78,27 @@ var SpacebookApp = function () {
       var $clickedPost = $(currentPost).closest('.post');
       $clickedPost.find('.comments-container').toggleClass('show');
     },
-    createComment: function () {
-      //TODO
+    createComment: function (id,comment) {
+      var currentpost =this._findPostById(id);
+      var Comment={text:comment,CommentId:this.Idcomment};
+     currentpost.comments.push(Comment);
+     this.Idcomment++;
     },
-    removeComment: function () {
-      //TODO
+    removeComment: function ( commentID, postID) {
+     var Post= this._findPostById(postID);
+     for(let i=0;i<Post.comments.length;i++){
+      if(Post.comments[i].CommentId == commentID)
+      Post.comments.splice(i,1) ;
+     }
     },
-    getCommentsHTML: function () {
-      //TODO
+    getCommentsHTML: function(post) {
+       var comments=post.comments
+       var allcoments='<ul>';
+       for (let j = 0; j < comments.length; j++){
+         allcoments += '<li class="coment" data-id= '+ comments[j].CommentId +' >' + comments[j].text+ 
+         '<button type="button" class=" btn btn-danger btn-sm removeComment">Remove Comment</button>' +'</li>'
+       }
+       return allcoments + '</ul>';
     }
   };
 }
@@ -102,12 +117,26 @@ $('.add-post').on('click', function () {
 });
 
 $('.posts').on('click', '.remove', function () {
-  
+
   var $clickedPost = $(this).closest('.post');
   var postID = $clickedPost.data().id;
 
   app.removePost(postID);
   app.renderPosts();
+});
+$('.posts').on('click', '.add-comment', function () {
+  var commentText=$(this).closest('.post').find('.comment-name').val();
+  var  currentID=$(this).closest('.post').data().id;
+  app.createComment(currentID,commentText);
+  app.renderPosts();
+});
+$('.posts').on('click','.removeComment', function () {
+  var relevantPost = $(this).closest('.post');
+  var postID = relevantPost.data().id;
+  var commentID= $(this).closest('.coment').data('id');
+  app.removeComment( commentID, postID);
+  app.renderPosts();
+
 });
 
 $('.posts').on('click', '.show-comments', function () {
