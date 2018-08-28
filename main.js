@@ -21,15 +21,15 @@ let newComment = function (PostId, UserName, Comment) {
 const renderPosts = function () {
     $(".posts").empty();
     for (let i = 0; i < posts.length; i++) {
-        let $post = (`<div class="post" data-id='${posts[i].Id}'>
+        let $post = (`<div class="post"  data-id='${posts[i].Id}'>
             <button type="button" class="remove">REMOVE</button> 
-          <a herf=""> ${posts[i].Text} </a>
+        <div id="dialog"> ${posts[i].Text} </div>
             <form class="form">
         user name: <input class='userName' type='text'/> 
             comment: <input class='comment' type='text'/ >
-            <button type='button' class='post-comment'> Post Comment </button>
+            <button type='button' class='post-comment' id="dialog"> Post Comment </button>
             </form>
-            ${renderCommentsPost(posts[i].comments)}
+           <div id="dialog"> ${renderCommentsPost(posts[i].comments)} </div>
         </div>`);
         $(".posts").append($post);
     }
