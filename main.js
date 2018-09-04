@@ -14,24 +14,30 @@ let newPost = function () {
 
 let newComment = function (PostId, UserName, Comment) {
     let index = findIndex(PostId);
-    posts[index].comments.push({CommentId:Idcomment,username: UserName, comment: Comment });
+    posts[index].comments.push(
+        {
+            CommentId:Idcomment,
+            username: UserName, 
+            comment: Comment
+         });
     Idcomment++;
 }
 
 const renderPosts = function () {
     $(".posts").empty();
     for (let i = 0; i < posts.length; i++) {
-        let $post = (`<div class="post"  data-id='${posts[i].Id}'>
+        let $post =`<div class="post"  data-id='${posts[i].Id}'>
             <button type="button" class="remove">REMOVE</button> 
-        <div id="dialog"> ${posts[i].Text} </div>
+            <p class="modallink"><a href="#ex1" rel="modal:open"> ${posts[i].Text} </a></p>
             <form class="form">
         user name: <input class='userName' type='text'/> 
             comment: <input class='comment' type='text'/ >
             <button type='button' class='post-comment' id="dialog"> Post Comment </button>
             </form>
-           <div id="dialog"> ${renderCommentsPost(posts[i].comments)} </div>
-        </div>`);
+          <div class="modalcomments">${renderCommentsPost(posts[i].comments)}</div>
+        </div>`
         $(".posts").append($post);
+
     }
 }
 function renderCommentsPost(comments) {
@@ -54,6 +60,14 @@ function findIndex(ID) {
         }
     }
 }
+$('.posts').on('click', '.modallink',  function() {
+       let currentPost = $(this).closest(".post");
+       let posttext=  currentPost.find( '.modallink' ).text();
+       let commentstext= currentPost.find( '.modalcomments').text();     
+    $( '.windowpost' ).text("  the post: "  + posttext ) ;
+    $( '.windowcomments' ).text(" comments: "  +  commentstext) ; 
+    
+});
 
 $('.posts').on('click', '.post-comment', function () {
     let currentPost = $(this).closest(".post");
